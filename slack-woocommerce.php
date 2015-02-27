@@ -1,16 +1,19 @@
 <?php
 /**
- * Plugin Name: Slack WooCommerce
- * Plugin URI: http://gedex.web.id/wp-slack/
- * Description: This plugin allows you to send notifications to Slack channels whenever payment in WooCommerce is marked as complete.
+ * Plugin Name: Velocis Slack WooCommerce
+ * Plugin URI: http://velocis.us/products/velocis-wp-slack/
+ * Description: This plugin allows you to send notifications to Slack channels whenever a new order arrives.
  * Version: 0.1.0
- * Author: Akeda Bagus
- * Author URI: http://gedex.web.id
+ * Author: Bradley Joyce \ Velocis 
+ * Author URI: http://velocis.us
  * Text Domain: slack
  * Domain Path: /languages
  * License: GPL v2 or later
  * Requires at least: 3.6
- * Tested up to: 3.8
+ * Tested up to: 4.1
+ *
+ * This plugin is made possible by the open source work of Akeda Bagus and his Slack WooCommerce plugin
+ * http://gedex.web.id/wp-slack/
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,14 +35,15 @@
  *
  * @filter slack_get_events
  */
-function wp_slack_woocommerce_order_status_completed( $events ) {
-	$events['woocommerce_order_status_completed'] = array(
+
+function wp_slack_woocommerce_new_order( $events ){
+	$events['woocommerce_new_order'] = array(
 
 		// Action in WooCommerce to hook in to get the message.
-		'action' => 'woocommerce_order_status_completed',
+		'action' => 'woocommerce_new_order',
 
 		// Description appears in integration setting.
-		'description' => __( 'When a payment in WooCommerce is marked as complete', 'slack' ),
+		'description' => __( 'When a new order is submitted', 'slack' ),
 
 		// Message to deliver to channel. Returns false will prevent
 		// notification delivery.
@@ -82,9 +86,9 @@ function wp_slack_woocommerce_order_status_completed( $events ) {
 			remove_filter( 'woocommerce_get_formatted_order_total', 'wp_strip_all_tags', 10 );
 
 			// Returns the message to be delivered to Slack.
-			return apply_filters( 'slack_woocommerce_order_status_completed_message',
+			return apply_filters( 'slack_woocommerce_new_order_message',
 				sprintf(
-					__( 'New payment with amount *%s* has been made by *%s* on *%s*. <%s|See detail>', 'slack' ),
+					__( 'New order with amount *%s* has been made by *%s* on *%s*. <%s|See detail>', 'slack' ),
 
 					$total,
 					$username,
@@ -99,4 +103,4 @@ function wp_slack_woocommerce_order_status_completed( $events ) {
 
 	return $events;
 }
-add_filter( 'slack_get_events', 'wp_slack_woocommerce_order_status_completed' );
+add_filter( 'slack_get_events', 'wp_slack_woocommerce_new_order' );

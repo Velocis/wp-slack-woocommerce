@@ -40,7 +40,7 @@ function wp_slack_woocommerce_new_order( $events ){
 	$events['woocommerce_new_order'] = array(
 
 		// Action in WooCommerce to hook in to get the message.
-		'action' => 'woocommerce_new_order',
+		'action' => 'woocommerce_order_status_processing',
 
 		// Description appears in integration setting.
 		'description' => __( 'When a new order is submitted', 'slack' ),
